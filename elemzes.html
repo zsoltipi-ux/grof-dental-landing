@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fogtechnikai Iparág 2026 — Gróf Dental Helyzetkép</title>
+<style>
+:root{
+--bg:#fafbfc;--white:#fff;--dark:#0f172a;--gray:#64748b;--light:#f1f5f9;
+--accent:#1e40af;--accent-light:#dbeafe;--green:#059669;--green-light:#d1fae5;
+--orange:#d97706;--orange-light:#fef3c7;--red:#dc2626;--red-light:#fee2e2;
+--purple:#7c3aed;--purple-light:#ede9fe;--border:#e2e8f0;--radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--dark);line-height:1.8;background:var(--bg)}
+h1,h2,h3,h4,.section-label,.tag,.stat .num,.nav-link{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+
+.report-header{background:var(--white);border-bottom:2px solid var(--dark);padding:40px 24px 32px;text-align:center}
+.report-header .mono{font-family:monospace;font-size:12px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.report-header h1{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:8px;line-height:1.3}
+.report-header .sub{color:var(--gray);font-size:15px;max-width:560px;margin:0 auto}
+.report-header .date{margin-top:16px;font-size:13px;color:var(--gray);font-family:monospace}
+
+.nav{display:flex;gap:4px;padding:12px 16px;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:0;z-index:10}
+.nav-link{padding:8px 16px;border-radius:6px;border:none;background:transparent;color:var(--gray);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.nav-link:hover{background:var(--light);color:var(--dark)}
+.nav-link.active{background:var(--dark);color:#fff}
+
+.container{max-width:780px;margin:0 auto;padding:0 20px}
+.tab-content{display:none;padding:40px 0}
+.tab-content.active{display:block}
+
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin-bottom:6px}
+h2{font-size:clamp(20px,3.5vw,28px);font-weight:800;margin-bottom:14px;line-height:1.3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.lead{color:var(--gray);font-size:16px;margin-bottom:24px;line-height:1.7}
+p{margin-bottom:14px;font-size:15px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.stat .num{font-size:26px;font-weight:800;color:var(--dark)}
+.stat .label{font-size:12px;color:var(--gray);margin-top:2px}
+
+.insights{display:grid;gap:14px;margin:24px 0}
+.insight{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+.insight h4{font-size:15px;font-weight:700;margin-bottom:6px;font-family:-apple-system,sans-serif}
+.insight p{font-size:14px;color:var(--gray);margin-bottom:0}
+.insight .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:4px;margin-bottom:8px}
+.tag-trend{background:var(--accent-light);color:var(--accent)}
+.tag-risk{background:var(--red-light);color:var(--red)}
+.tag-opportunity{background:var(--green-light);color:var(--green)}
+.tag-data{background:var(--purple-light);color:var(--purple)}
+.tag-competitive{background:var(--orange-light);color:var(--orange)}
+
+.callout{background:var(--light);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0;font-size:14px;color:var(--dark);font-style:italic}
+.callout strong{color:var(--accent)}
+
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;margin:20px 0}
+.table-wrap table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px;font-family:-apple-system,sans-serif}
+.table-wrap th{background:var(--light);text-align:left;padding:10px 14px;font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px}
+.table-wrap td{padding:10px 14px;border-top:1px solid var(--border)}
+
+.competitor{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:14px}
+.competitor h4{font-size:15px;font-weight:700;margin-bottom:2px;font-family:-apple-system,sans-serif}
+.competitor .meta{font-size:12px;color:var(--gray);margin-bottom:8px}
+.competitor p{font-size:14px;color:var(--gray);margin-bottom:0}
+.competitor .strengths{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.competitor .str-tag{font-size:11px;background:var(--light);color:var(--dark);padding:3px 8px;border-radius:4px}
+
+.opps{display:grid;gap:14px;margin:24px 0}
+.opp{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;border-left:3px solid var(--green)}
+.opp h4{font-size:15px;font-weight:700;margin-bottom:6px;font-family:-apple-system,sans-serif}
+.opp p{font-size:14px;color:var(--gray);margin-bottom:0}
+.opp .impact{margin-top:10px;font-size:13px;color:var(--green);font-weight:600;font-family:-apple-system,sans-serif}
+
+.back-link{display:inline-block;margin:24px 0 0;font-size:13px;color:var(--accent);text-decoration:none;font-family:-apple-system,sans-serif;font-weight:600}
+.back-link:hover{text-decoration:underline}
+
+footer{text-align:center;padding:32px 20px;color:var(--gray);font-size:12px;border-top:1px solid var(--border);margin-top:20px;font-family:-apple-system,sans-serif}
+
+@media(max-width:640px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="report-header">
+<div class="mono">Iparági Helyzetkép</div>
+<h1>A fogtechnikai iparág 2026-ban</h1>
+<div class="sub">Trendek, kihívások és lehetőségek — egy 18 technikusos magyar labor szemszögéből</div>
+<div class="date">Készült: 2026. április · Gróf Dental számára</div>
+</div>
+
+<nav class="nav">
+<button class="nav-link active" data-tab="market">Piac & Trendek</button>
+<button class="nav-link" data-tab="challenges">Kihívások</button>
+<button class="nav-link" data-tab="competitors">Piaci Szereplők</button>
+<button class="nav-link" data-tab="software">Szoftver Piac</button>
+<button class="nav-link" data-tab="opportunities">Lehetőségek</button>
+</nav>
+
+<div class="container">
+
+<!-- TAB: PIAC -->
+<div class="tab-content active" id="market">
+<div class="section-label">Piaci Áttekintés</div>
+<h2>A piac nő — de nem mindenkinek egyformán</h2>
+<p class="lead">A fogtechnikai iparág globálisan $39 milliárdos piac, évi 6.3%-os növekedéssel. Európában a konszolidáció felgyorsult: a digitalizált, hatékonyan működő laborok terjeszkednek, a kicsik beolvadnak vagy kiszorulnak.</p>
+
+<div class="stats">
+<div class="stat"><div class="num">$39 Mrd</div><div class="label">Globális piac (2026)</div></div>
+<div class="stat"><div class="num">6.3%</div><div class="label">Éves növekedés (CAGR)</div></div>
+<div class="stat"><div class="num">52 év</div><div class="label">EU technikus átlagéletkor</div></div>
+<div class="stat"><div class="num">&lt;4000</div><div class="label">Új technikus/év (EU)</div></div>
+</div>
+
+<div class="insights">
+<div class="insight">
+<span class="tag tag-trend">Megatrend</span>
+<h4>Konszolidáció Európában</h4>
+<p>Laborláncok és csoportok formálódnak szerte Európában. A kis mester-laborok egyre nehezebben tartják a lépést a technológiai beruházásokkal. A nagy, jól felszerelt laborok — mint a Gróf Dental — kedvező pozícióban vannak.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-trend">Megatrend</span>
+<h4>End-to-End digitális workflow</h4>
+<p>Az iparág a teljes digitalizáció felé halad: a scan beérkezésétől a kiszállításig. Az izolált megoldások (csak CAD, vagy csak fréz) már nem elegendőek — az összekötött, integrált folyamatok a versenyképesség kulcsa.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Adat</span>
+<h4>Munkaerőhiány — strukturális probléma</h4>
+<p>Az EU-ban évi 4000-nél kevesebb új fogtechnikus végez, miközben az átlagéletkor 52 év. A meglévő csapat hatékonyabbá tétele az egyetlen fenntartható út — több embert egyszerűen nem lehet felvenni.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-trend">Megatrend</span>
+<h4>Fogászati turizmus — Magyarország erőssége</h4>
+<p>Évi 60-70 ezer külföldi páciens, 70-80 milliárd Ft forgalom. A turista klinikák egyre inkább saját labort építenek, de a nagyobb, összetettebb munkákat továbbra is külső laborokra bízzák.</p>
+</div>
+</div>
+
+<div class="callout">
+<strong>Ami ebből következik:</strong> A konszolidáció és a munkaerőhiány együtt azt jelenti, hogy a jövőben azok a laborok maradnak talpon, amelyek kevesebb emberrel többet tudnak kiadni. Ehhez viszont rendszer kell, nem csak jó gépek.
+</div>
+</div>
+
+<!-- TAB: KIHÍVÁSOK -->
+<div class="tab-content" id="challenges">
+<div class="section-label">Kihívások 2026</div>
+<h2>Amivel a nagy laborok szembenéznek</h2>
+<p class="lead">Ezek nem egyedi problémák — az egész iparágra jellemzőek. A méret növekedésével viszont exponálisan nő a komplexitás.</p>
+
+<div class="insights">
+<div class="insight">
+<span class="tag tag-risk">Kritikus</span>
+<h4>A bottleneck nem a gyártás — hanem ami körülötte van</h4>
+<p>A frézgépek gyorsak, a 3D printerek egyre jobbak. De a koordináció, kommunikáció, ütemezés és adathiány lassítja a labort. Az iparági kutatások szerint ez a #1 termelékenységi korlát 2026-ban.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-risk">Kritikus</span>
+<h4>Technikus kiégés — 95% túlterhelt</h4>
+<p>Nemzetközi felmérések szerint a fogtechnikusok 95.5%-a túlterhelt. A kiégés és fluktuáció a legnagyobb rejtett költség — és a megoldás nem több ember (nem is lehet felvenni), hanem kevesebb admin a meglévő csapaton.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-competitive">Versenyhelyzet</span>
+<h4>In-house laborok fenyegetése</h4>
+<p>A nagyobb fogászati klinikák (különösen a turista szektorban) saját labort építenek. Az egyszerűbb munkákat maguk gyártják. A külső laboroknak az összetettebb, magasabb hozzáadott értékű munkákra kell fókuszálniuk.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Adat</span>
+<h4>Géppark koordináció — exponenciális komplexitás</h4>
+<p>2 frézgépnél még átlátható. 7-nél már egészen más szintű kihívás. Anyagtípusok, várakozási idők, karbantartás, kapacitás — a változók száma gyorsan nő. Vizuális ütemezéssel a kihasználtság 15-20%-kal javítható.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Adat</span>
+<h4>Digitalizáció 30%-os munkaerő megtakarítást hozhat</h4>
+<p>Kutatások szerint a teljes digitális workflow 30%-kal csökkenti a munkaerő-igényt és 50%-kal növeli a kapacitást — ugyanazzal a csapattal. De ehhez integrált rendszer kell, nem elszigetelt eszközök.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-competitive">Versenyhelyzet</span>
+<h4>Sokcsatornás rendelésbeérkezés</h4>
+<p>Email, telefon, scan, üzenet — ahány fogász, annyi csatorna. Egységes digitális rendeléskezelés az iparági átlag szerint 50%-kal csökkenti a visszakérdezéseket.</p>
+</div>
+</div>
+
+<div class="callout">
+<strong>Ami ebből következik:</strong> A géppark modern, a csapat tapasztalt — ami hiányzik, az az összekötő szövet: hogyan áramlanak az esetek, hogyan oszlik el a terhelés, honnan jön a rálátás.
+</div>
+</div>
+
+<!-- TAB: PIACI SZEREPLŐK -->
+<div class="tab-content" id="competitors">
+<div class="section-label">Versenytérkép</div>
+<h2>Kik a főbb piaci szereplők?</h2>
+<p class="lead">A magyar fogtechnikai piac fragmentált: sok kis labor (1-5 fő) és néhány nagyobb szereplő. A Gróf Dental az utóbbiak közé tartozik — de a verseny több irányból jön.</p>
+
+<div class="competitor">
+<h4>Dentaris</h4>
+<div class="meta">Budapest · Teljes digitális labor · Nemzetközi</div>
+<p>End-to-end digitális labor: partner fogászatoknak ingyenes Medit szkennerrel, online rendeléssel, gyors átfutással. Agresszíven terjeszkedik a partner-fogász modellel — a fogász számára a lehető legegyszerűbb együttműködést kínálja.</p>
+<div class="strengths">
+<span class="str-tag">Ingyenes szkenner</span>
+<span class="str-tag">Online rendelés</span>
+<span class="str-tag">Skálázható modell</span>
+<span class="str-tag">Marketing erős</span>
+</div>
+</div>
+
+<div class="competitor">
+<h4>DentalTech</h4>
+<div class="meta">Budapest · CAD-CAM lézer/fréz centrum</div>
+<p>Specialista fréz centrum Amann Girrbach gépekkel. Lézer szinterezés, 5 tengelyes CNC. Főként alvállalkozóként dolgozik más laboroknak — a kapacitás értékesítésnek modellje.</p>
+<div class="strengths">
+<span class="str-tag">Amann Girrbach</span>
+<span class="str-tag">Lézer szinterezés</span>
+<span class="str-tag">Alvállalkozói modell</span>
+</div>
+</div>
+
+<div class="competitor">
+<h4>In-house klinika laborok</h4>
+<div class="meta">Budapest, Győr, Sopron · Fogászati turizmus szektor</div>
+<p>Helvetic Clinics, VitalEurope, Kreativ Dental — egyre több turista klinika épít saját labort. Az egyszerű munkákat maguk csinálják, a bonyolultabb munkákat külső laborra bízzák.</p>
+<div class="strengths">
+<span class="str-tag">Gyors turnaround</span>
+<span class="str-tag">Vertikális integráció</span>
+<span class="str-tag">Magas volumen</span>
+</div>
+</div>
+
+<div class="competitor">
+<h4>Kis mester-laborok (1-5 fő)</h4>
+<div class="meta">Országszerte · 500+ labor</div>
+<p>A magyar piac gerince. Alacsony overheaddel, személyes kapcsolatokkal működnek. A konszolidációs trendben a leginkább veszélyeztetettek — de egyben potenciális alvállalkozói partnerek is.</p>
+<div class="strengths">
+<span class="str-tag">Alacsony ár</span>
+<span class="str-tag">Személyes kapcsolat</span>
+<span class="str-tag">Rugalmasság</span>
+</div>
+</div>
+
+<div class="callout">
+<strong>A Gróf Dental pozíciója:</strong> A kis laboroknál jóval felszereltebb és tapasztaltabb. A Dentaris-típusú digitális modellel szemben a kérdés az, hogy milyen gyorsan tudja a saját folyamatait rendszerszinten összekapcsolni — mert a versenyelőny már nem csak a gépekből, hanem a fogász számára nyújtott élményből jön.
+</div>
+
+<h2 style="margin-top:32px">Hol áll a Gróf Dental?</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Szempont</th><th>Gróf Dental</th><th>Dentaris</th><th>DentalTech</th><th>Kis laborok</th></tr>
+</thead>
+<tbody>
+<tr><td>Méret</td><td><strong>18 technikus</strong></td><td>Nem publikus</td><td>Közepes</td><td>1-5 fő</td></tr>
+<tr><td>Géppark</td><td><strong>7 fréz + 3D</strong></td><td>Teljes digitális</td><td>5-tengelyes CNC</td><td>1-2 gép</td></tr>
+<tr><td>CAD szoftver</td><td>3Shape, Exocad, DW</td><td>Saját workflow</td><td>AG, Exocad</td><td>Változó</td></tr>
+<tr><td>Tapasztalat</td><td><strong>70+ év</strong></td><td>~10 év</td><td>~15 év</td><td>Változó</td></tr>
+<tr><td>Digitális workflow</td><td>CAD/CAM ✓ · Folyamatok ?</td><td>Integrált ✓</td><td>Részleges</td><td>Minimális</td></tr>
+<tr><td>Online rendelés</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+<tr><td>Országos kiszállítás</td><td><strong>Saját futár ✓</strong></td><td>✓</td><td>Részleges</td><td>Helyi</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<strong>Ami ebből következik:</strong> Hardverben és tapasztalatban piacvezető pozíció. A különbség a digitális folyamatokban van: a Dentaris típusú versenytársak nem jobb gépekkel nyernek, hanem azzal, hogy a fogász számára egyszerűbb velük dolgozni. Ez nem felszerelés kérdés — rendszer kérdés.
+</div>
+</div>
+
+<!-- TAB: SZOFTVER -->
+<div class="tab-content" id="software">
+<div class="section-label">Szoftver Piac</div>
+<h2>Milyen megoldások vannak a piacon?</h2>
+<p class="lead">Áttekintettük, mit kínál a nemzetközi és magyar szoftver piac egy Gróf Dental méretű labornak.</p>
+
+<div class="insights">
+<div class="insight">
+<span class="tag tag-data">Nemzetközi</span>
+<h4>Evident EviSmart (Kanada) — $199-999/hó</h4>
+<p>A legteljesebb platform: 7 modul (Downloader, QC, CaseEntry, LMS, CAD, Comm, Nesting). Erős AI. De: angol, USD, nincs NAV, support időzóna eltérés. Lokalizáció nélkül egy magyar labornak nehézkes.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Nemzetközi</span>
+<h4>Oqcam — AI-alapú CAM automatizálás</h4>
+<p>Fréz automatizálásra kiváló: AI nesting, automatikus toolpath. De nem labor menedzsment — nincs rendeléskezelés, fogász portál, pénzügy. Kiegészítő eszköz, nem teljes megoldás.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Nemzetközi</span>
+<h4>AMOSYS (Ausztria) — €14.99/hó</h4>
+<p>EU-alapú, alacsony ár, ingyenes fogász portál. De: nincs magyar nyelv, nincs production dashboard. Kis laborokra tervezett — 18 technikusnál kinőhető.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Magyar</span>
+<h4>Fogline — MDR kompatibilis labor szoftver</h4>
+<p>Az egyetlen magyar nyelvű labor szoftver. Rendeléskezelés, GDPR. De: alapfunkciók, nincs production mgmt, nincs fréz ütemezés, nincs fogász portál. Egy kisebb labornak megfelelő.</p>
+</div>
+
+<div class="insight">
+<span class="tag tag-data">Nemzetközi</span>
+<h4>Labtrac (UK) — ~£50-100/hó</h4>
+<p>Régóta a piacon, stabil rendeléskezelés és számlázás. Angol/GBP, nincs production dashboard, nincs fréz ütemezés. Adminisztratív, nem termelés-orientált.</p>
+</div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Amire egy 18 fős labornak szüksége van</th><th>Evident</th><th>Oqcam</th><th>AMOSYS</th><th>Fogline</th><th>Labtrac</th></tr>
+</thead>
+<tbody>
+<tr><td>Magyar nyelv</td><td>—</td><td>—</td><td>—</td><td>✓</td><td>—</td></tr>
+<tr><td>NAV számlázás (HUF+EUR)</td><td>—</td><td>—</td><td>—</td><td>Részben</td><td>—</td></tr>
+<tr><td>Fogász portál</td><td>—</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+<tr><td>Production dashboard</td><td>LMS modul</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Fréz/printer ütemezés</td><td>—</td><td>✓ (CAM)</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>AI (QC, design)</td><td>✓</td><td>✓ (nesting)</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Személyre szabható</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Helyi support (HU)</td><td>—</td><td>—</td><td>—</td><td>Online</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<strong>Ami ebből következik:</strong> Nincs kész megoldás, ami egy 18 technikusos magyar labor minden igényét lefedi. A reális opciók: több szoftver kombinálása, vagy olyan partner keresése, aki személyre szabott megoldást tud adni — a labor valós igényei alapján.
+</div>
+</div>
+
+<!-- TAB: LEHETŐSÉGEK -->
+<div class="tab-content" id="opportunities">
+<div class="section-label">Lehetőségek</div>
+<h2>Hol tud előnybe kerülni egy Gróf Dental méretű labor?</h2>
+<p class="lead">A méret és a felszereltség erős alap. A következő szint a folyamatok összekapcsolásából és az adatvezérelt döntéshozatalból jön.</p>
+
+<div class="opps">
+<div class="opp">
+<h4>Online fogász portál — a leggyorsabb versenyelőny</h4>
+<p>Egy felület, ahol a fogászok látják a státuszt, feltöltik a scan-t, és mindig hiánytalan adatot küldenek. A Dentaris ezzel nyeri a piacot — de ez nem Dentaris-specifikus, bármely labor megvalósíthatja.</p>
+<div class="impact">Iparági adat: 50%-kal kevesebb visszakérdezés, erősebb fogász-lojalitás</div>
+</div>
+
+<div class="opp">
+<h4>Termelési transzparencia — ki mennyit csinál, valójában</h4>
+<p>18 technikusnál a termelés átláthatósága közvetlenül befolyásolja a nyereségességet. Heti riportok, átfutási idők, típus szerinti bontás — nem kontroll céljából, hanem optimalizálásra.</p>
+<div class="impact">Iparági tapasztalat: 10-15%-os termelékenység javulás a mérés puszta bevezetésétől</div>
+</div>
+
+<div class="opp">
+<h4>Géppark kihasználtság maximalizálása</h4>
+<p>7 frézgép és 3D printerek kapacitásának vizuális követése. Az éjszakai futtatások tervezhetőbbé válnak, a szabad kapacitás bevételt termelhet.</p>
+<div class="impact">Iparági adat: 15-20% gépkihasználtság javulás, gyorsabb megtérülés a gépberuházásokon</div>
+</div>
+
+<div class="opp">
+<h4>Alvállalkozói fréz-szolgáltatás más laboroknak</h4>
+<p>A DentalTech modellje: a szabad gépi kapacitást más laboroknak értékesíteni — frézszolgáltatás, nyomtatás, akár digitális tervezés. Ez nem igényel extra beruházást, csak a kapacitás jobb menedzselését.</p>
+<div class="impact">Új bevételi forrás a meglévő infrastruktúrából — nulla extra befektetéssel</div>
+</div>
+
+<div class="opp">
+<h4>Anyag- és margin-tracking</h4>
+<p>Melyik terméktípus a legjövedelmezőbb? Melyik fogász generálja a legtöbb profitot? Ez az adat mérhető — az árképzés és ügyfél-priorizálás pontossága ezen múlik.</p>
+<div class="impact">Iparági tapasztalat: pontos marginkép = jobb árképzés, kevesebb veszteséges munka</div>
+</div>
+
+<div class="opp">
+<h4>Scanner integráció — automatikus esetlétrehozás</h4>
+<p>3Shape, Exocad és Dental Wings — ha a beérkező scan automatikusan létrehozná az esetet, emberi beavatkozás nélkül, az perceket spórol esetenként, naponta akár órákat.</p>
+<div class="impact">Cél: zero-touch case entry, manuális adatbevitel kiváltása</div>
+</div>
+
+<div class="opp">
+<h4>AI — beérkező rendelések ellenőrzése</h4>
+<p>A laborok 25%-a már használ AI-t. A következő lépcső: beérkező rendelések automatikus ellenőrzése — hiányzó adat, ellentmondó instrukciók felismerése még a termelés előtt.</p>
+<div class="impact">Kevesebb remake, korai hibaszűrés, gördülékenyebb termelés</div>
+</div>
+</div>
+
+<div class="callout">
+<strong>A lényeg:</strong> A Gróf Dental hardverben és tudásban az ország élvonalába tartozik. A következő előrelépés nem újabb gép — hanem a meglévő kapacitás jobb kihasználása és a fogászokkal való digitális kapcsolat. Ehhez a mérethez illő, személyre szabott rendszer szükséges.
+</div>
+
+<a href="index.html" class="back-link">← Vissza az áttekintéshez</a>
+</div>
+
+</div>
+
+<footer>
+<p>Iparági Helyzetkép 2026 · Készült a Gróf Dental számára</p>
+<p style="margin-top:4px">Források: EviSmart Industry Report 2026 · Evident Digital · 3Shape Blog · CadDent Market Analysis · Grand View Research</p>
+</footer>
+
+<script>
+document.querySelectorAll('.nav-link').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(btn.dataset.tab).classList.add('active');
+});
+});
+</script>
+</body>
+</html>
